@@ -2,18 +2,25 @@ import {
   Injectable,
   UnprocessableEntityException,
   NotFoundException,
+  Inject,
 } from '@nestjs/common';
 import { TicketDto } from '../dto/create-itinerary.dto';
 import { ItineraryResponseDto } from '../dto/itinerary-response.dto';
 import { v4 as uuidv4 } from 'uuid';
+import {
+  ITINERARY_REPOSITORY,
+  ItineraryRepository,
+} from './itinerary.repository';
 
 @Injectable()
 export class ItineraryService {
-  // In a real application, this would be a database.
-  private readonly itineraries = new Map<string, ItineraryResponseDto>();
+  constructor(
+    @Inject(ITINERARY_REPOSITORY)
+    private readonly itineraryRepository: ItineraryRepository,
+  ) {}
 
   findById(id: string): ItineraryResponseDto {
-    const itinerary = this.itineraries.get(id);
+    const itinerary = this.itineraryRepository.findById(id);
     if (!itinerary) {
       throw new NotFoundException(`Itinerary with ID "${id}" not found.`);
     }
@@ -92,7 +99,7 @@ export class ItineraryService {
       humanReadable: this.generateHumanReadable(sortedTickets),
     };
 
-    this.itineraries.set(id, response); // "Persist" the result
+    this.itineraryRepository.save(response);
 
     return response;
   }

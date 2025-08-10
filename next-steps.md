@@ -14,10 +14,6 @@ This document outlines potential improvements, why they’re valuable, and why t
 
 ### Design and extensibility
 
-- **Extract an `ItineraryRepository` interface and an `InMemoryItineraryRepository` implementation**
-  - **Benefit**: Separates domain from infrastructure; easier to swap storage (DB, cache) and test in isolation.
-  - **Why not now**: No external persistence yet; current in-memory approach is sufficient for the scope.
-
 - **Introduce `Itinerary` as an entity/aggregate** (for future operations like delete, partial updates)
   - **Benefit**: Clearer domain model, invariants in one place, easier future evolution.
   - **Why not now**: Additional abstraction without immediate need; will revisit when write operations grow.
