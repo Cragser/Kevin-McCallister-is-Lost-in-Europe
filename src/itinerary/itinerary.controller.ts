@@ -21,7 +21,7 @@ import {
 import { ItineraryResponseDto } from '../dto/itinerary-response.dto';
 
 @ApiTags('itineraries')
-@Controller('itineraries')
+@Controller({ path: 'itineraries', version: '1' })
 export class ItineraryController {
   constructor(private readonly itineraryService: ItineraryService) {}
 

@@ -3,10 +3,14 @@
 # we must first create an itinerary. Therefore, the creation request is duplicated here
 # so that its response (and ID) can be used by the GET request in this same file.
 
+@host = http://localhost:3000
+@version = v1
+@baseUrl = {{host}}/{{version}}
+
 ###
 # @name createItineraryForHumanGetTest
 # STEP 1: Create an itinerary to get an ID for testing.
-POST http://localhost:3000/itineraries
+POST {{baseUrl}}/itineraries
 Content-Type: application/json
 
 {
@@ -20,8 +24,8 @@ Content-Type: application/json
 ###
 # SUCCESS (200): Retrieve the human-readable version of an itinerary.
 # NOTE: First, run the "createItineraryForHumanGetTest" request above.
-GET http://localhost:3000/itineraries/{{createItineraryForHumanGetTest.response.body.id}}/human
+GET {{baseUrl}}/itineraries/{{createItineraryForHumanGetTest.response.body.id}}/human
 
 ###
 # FAILURE (404): Attempt to retrieve a human-readable itinerary with an ID that does not exist.
-GET http://localhost:3000/itineraries/00000000-0000-0000-0000-000000000000/human
+GET {{baseUrl}}/itineraries/00000000-0000-0000-0000-000000000000/human

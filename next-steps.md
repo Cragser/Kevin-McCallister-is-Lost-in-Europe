@@ -4,23 +4,13 @@ This document outlines potential improvements, why they’re valuable, and why t
 
 ### Typing and validation
 
-- **Convert `transport_type` to enum (DONE)**
-  - **Benefit**: Safer code and clearer API contract; prevents invalid modes.
-  - **Why not now**: Already done.
-
 - **Mode-specific validation in `TicketDetailsDto`** (e.g., `gate` only for flights, `platform` only for trains)
   - **Benefit**: Tighter input validation; clearer error feedback to clients.
   - **Why not now**: Requires per-mode schemas and additional test coverage; current scope focused on core sorting logic.
 
 ### Errors and developer experience
 
-- **Consistent error responses using RFC7807 with a global `ExceptionFilter`**
-  - **Benefit**: Predictable, machine-readable errors; easier client handling and better docs.
-  - **Why not now**: Needs a small error model refactor and Swagger integration; deferred to keep initial delivery small.
-
-- **More specific 422 responses for duplicates, cycles, and broken chains**
-  - **Benefit**: Faster debugging and better UX for API consumers.
-  - **Why not now**: Requires granular validation error mapping; current implementation favors simplicity.
+<!-- Removed: RFC7807 global formatter and specific 422 messages already implemented and covered by e2e tests -->
 
 ### Design and extensibility
 
@@ -34,13 +24,7 @@ This document outlines potential improvements, why they’re valuable, and why t
 
 ### Documentation
 
-- **Add complex Swagger examples using `@ApiExtraModels` and `@ApiResponse` with examples**
-  - **Benefit**: Better consumer understanding; reduces integration mistakes.
-  - **Why not now**: Time-boxed; examples take effort to curate and maintain.
-
-- **Add API versioning and deprecation strategy**
-  - **Benefit**: Enables non-breaking evolution; sets clear upgrade paths.
-  - **Why not now**: Single-version MVP; will introduce when multiple endpoints stabilize.
+<!-- Removed pending item: richer Swagger examples -->
 
 ### Observability and robustness
 

@@ -1,10 +1,18 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { ValidationPipe } from '@nestjs/common';
+import { ValidationPipe, VersioningType } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import { ProblemDetailsFilter } from './common/filters/problem-details.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
+  // Enable API Versioning
+  app.enableVersioning({
+    type: VersioningType.URI,
+    defaultVersion: '1',
+  });
+
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
@@ -12,6 +20,9 @@ async function bootstrap() {
       transform: true,
     }),
   );
+
+  // Global RFC7807 error format
+  app.useGlobalFilters(new ProblemDetailsFilter());
 
   const config = new DocumentBuilder()
     .setTitle('Itinerary Sorting API')
