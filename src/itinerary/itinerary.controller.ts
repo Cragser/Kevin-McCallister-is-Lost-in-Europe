@@ -10,7 +10,14 @@ import {
 } from '@nestjs/common';
 import { ItineraryService } from './itinerary.service';
 import { CreateItineraryRequestDto } from '../dto/create-itinerary.dto';
-import { ApiTags, ApiOperation, ApiResponse, ApiBody } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiBody,
+  ApiUnprocessableEntityResponse,
+  ApiNotFoundResponse,
+} from '@nestjs/swagger';
 import { ItineraryResponseDto } from '../dto/itinerary-response.dto';
 
 @ApiTags('itineraries')
@@ -34,6 +41,10 @@ export class ItineraryController {
   @ApiResponse({
     status: 400,
     description: 'Bad Request. The input data is invalid.',
+  })
+  @ApiUnprocessableEntityResponse({
+    description:
+      'Unprocessable Entity. The itinerary is incomplete, contains cycles, or has invalid structure.',
   })
   @ApiResponse({
     status: 422,
@@ -62,6 +73,7 @@ export class ItineraryController {
     description:
       'Not Found. The itinerary with the specified ID does not exist.',
   })
+  @ApiNotFoundResponse({ description: 'Itinerary not found.' })
   findOne(@Param('id', ParseUUIDPipe) id: string): ItineraryResponseDto {
     return this.itineraryService.findById(id);
   }

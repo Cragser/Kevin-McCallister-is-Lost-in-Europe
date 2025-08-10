@@ -2,20 +2,31 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import * as request from 'supertest';
 import { AppModule } from './../src/app.module';
-import { CreateItineraryRequestDto } from '../src/dto/create-itinerary.dto';
+import {
+  CreateItineraryRequestDto,
+  TransportType,
+} from '../src/dto/create-itinerary.dto';
 
 describe('ItineraryController (e2e)', () => {
   let app: INestApplication;
   let createdItineraryId: string;
   const validPayload: CreateItineraryRequestDto = {
     tickets: [
-      { origin: 'Innsbruck', destination: 'Venice', transport_type: 'flight' },
+      {
+        origin: 'Innsbruck',
+        destination: 'Venice',
+        transport_type: TransportType.Flight,
+      },
       {
         origin: 'St. Anton',
         destination: 'Innsbruck',
-        transport_type: 'train',
+        transport_type: TransportType.Train,
       },
-      { origin: 'Venice', destination: 'Bologna', transport_type: 'bus' },
+      {
+        origin: 'Venice',
+        destination: 'Bologna',
+        transport_type: TransportType.Bus,
+      },
     ],
   };
 
@@ -50,8 +61,16 @@ describe('ItineraryController (e2e)', () => {
     it('should return a 422 Unprocessable Entity if the itinerary is broken', () => {
       const payload: CreateItineraryRequestDto = {
         tickets: [
-          { origin: 'A', destination: 'B', transport_type: 'train' },
-          { origin: 'C', destination: 'D', transport_type: 'train' }, // Broken chain
+          {
+            origin: 'A',
+            destination: 'B',
+            transport_type: TransportType.Train,
+          },
+          {
+            origin: 'C',
+            destination: 'D',
+            transport_type: TransportType.Train,
+          }, // Broken chain
         ],
       };
 
@@ -75,6 +94,35 @@ describe('ItineraryController (e2e)', () => {
       expect(response.body.sortedTickets[0].origin).toBe('St. Anton');
       expect(response.body.sortedTickets[1].origin).toBe('Innsbruck');
       expect(response.body.sortedTickets[2].origin).toBe('Venice');
+    });
+
+    it('should return 422 Unprocessable Entity when no tickets are provided', () => {
+      const payload: CreateItineraryRequestDto = { tickets: [] } as any;
+      return request(app.getHttpServer())
+        .post('/itineraries')
+        .send(payload)
+        .expect(422);
+    });
+
+    it('should return 422 Unprocessable Entity when duplicate origins exist', () => {
+      const payload: CreateItineraryRequestDto = {
+        tickets: [
+          {
+            origin: 'A',
+            destination: 'B',
+            transport_type: TransportType.Train,
+          },
+          {
+            origin: 'A',
+            destination: 'C',
+            transport_type: TransportType.Bus,
+          },
+        ],
+      };
+      return request(app.getHttpServer())
+        .post('/itineraries')
+        .send(payload)
+        .expect(422);
     });
   });
 

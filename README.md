@@ -57,56 +57,25 @@ pnpm run test:e2e
 
 ---
 
-## API Documentation
+## API Documentation & Testing
+
+### Swagger UI
 
 Once the application is running, you can access the interactive API documentation (Swagger UI) by navigating to:
 
 [http://localhost:3000/api](http://localhost:3000/api)
 
-The documentation provides detailed information about the available endpoints, their parameters, and response schemas. You can also use it to send requests to the API directly.
+The documentation provides detailed information about the available endpoints and their schemas. You can also use it to send requests to the API directly.
 
----
+### Testing with REST Client
 
-## Example Usage
+For a more integrated testing experience, this project includes a `http-requests` directory. These files allow you to send requests to the API directly from your code editor.
 
-Here is an example of how to sort an itinerary using `curl`.
+To use them, install the [**REST Client**](https://marketplace.visualstudio.com/items?itemName=humao.rest-client) extension for Visual Studio Code.
 
-```bash
-curl -X POST 'http://localhost:3000/itineraries' \
---header 'Content-Type: application/json' \
---data-raw '{
-  "tickets": [
-    {
-      "origin": "Innsbruck Airport",
-      "destination": "Venice Airport",
-      "transport_type": "flight",
-      "details": {
-        "vehicle_id": "AA904",
-        "seat": "18B",
-        "gate": "10",
-        "notes": "Self-check-in luggage at counter."
-      }
-    },
-    {
-      "origin": "St. Anton am Arlberg Bahnhof",
-      "destination": "Innsbruck Airport",
-      "transport_type": "train",
-      "details": {
-        "vehicle_id": "RJX 765",
-        "seat": "17C"
-      }
-    },
-    {
-      "origin": "Venice Airport",
-      "destination": "Home",
-      "transport_type": "taxi",
-      "details": {
-        "notes": "The final ride home."
-      }
-    }
-  ]
-}'
-```
+With the extension installed and the application running, you can open any file in the `http-requests` folder (e.g., `POST_itineraries.http`) and click the "Send Request" link that appears above each request definition.
+
+> **A Note on File Structure:** You will notice that the `GET` request files (e.g., `GET_itinerary_by_id.http`) also contain a `POST` request at the top. This is intentional. The REST Client extension scopes variables (like the itinerary ID needed for a `GET` request) to a single file. To make each file runnable on its own, the creation step is duplicated, ensuring you can test the `GET` endpoints independently without first running a request from another file.
 
 ---
 
@@ -122,9 +91,15 @@ The problem description did not specify a strict input format for the tickets. I
 
 This structure is enforced by DTOs and `class-validator`.
 
-### Persistence
+### Persistence Strategy (In-Memory)
 
-For this challenge, the sorted itineraries are stored in an in-memory map. In a production environment, this would be replaced with a persistent database like PostgreSQL, MongoDB, or Redis.
+For the purpose of this challenge, the API uses a simple **in-memory storage** strategy. A `Map` object within the `ItineraryService` holds all the sorted itineraries created during a single session.
+
+**What this means for you:**
+-   **No database setup required:** You don't need to install, configure, or seed a database to run the application. It works out of the box.
+-   **Data is volatile:** All data, including any sorted itineraries you create, will be **erased** every time the application stops or restarts. This is intentional for simplicity in this project.
+
+In a production environment, this in-memory map would be replaced with a persistent database like PostgreSQL or MongoDB.
 
 ### Extensibility: Adding New Transit Types
 

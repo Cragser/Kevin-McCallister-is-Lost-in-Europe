@@ -27,20 +27,20 @@ export class ItineraryService {
 
   sortItinerary(tickets: TicketDto[]): ItineraryResponseDto {
     if (!tickets || tickets.length === 0) {
-      const id = uuidv4();
-      const response: ItineraryResponseDto = {
-        id,
-        sortedTickets: [],
-        humanReadable: 'No itinerary provided.',
-      };
-      this.itineraries.set(id, response);
-      return response;
+      throw new UnprocessableEntityException(
+        'Invalid itinerary: no tickets provided.',
+      );
     }
 
     const originMap = new Map<string, TicketDto>();
     const destinationSet = new Set<string>();
 
     for (const ticket of tickets) {
+      if (originMap.has(ticket.origin)) {
+        throw new UnprocessableEntityException(
+          `Invalid itinerary: duplicate origin detected for "${ticket.origin}".`,
+        );
+      }
       originMap.set(ticket.origin, ticket);
       destinationSet.add(ticket.destination);
     }

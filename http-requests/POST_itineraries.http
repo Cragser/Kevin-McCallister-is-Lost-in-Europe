@@ -1,0 +1,48 @@
+###
+# @name createValidItinerary
+# SUCCESS (201): Create and sort a valid itinerary.
+POST http://localhost:3000/itineraries
+Content-Type: application/json
+
+{
+  "tickets": [
+    { "origin": "B", "destination": "C", "transport_type": "flight" },
+    { "origin": "A", "destination": "B", "transport_type": "train" },
+    { "origin": "C", "destination": "D", "transport_type": "bus" }
+  ]
+}
+
+###
+# FAILURE (400): Attempt to create an itinerary with invalid data (missing required fields).
+POST http://localhost:3000/itineraries
+Content-Type: application/json
+
+{
+  "tickets": [
+    { "origin": "A" }
+  ]
+}
+
+###
+# FAILURE (422): Attempt to create an itinerary with a broken chain.
+POST http://localhost:3000/itineraries
+Content-Type: application/json
+
+{
+    "tickets": [
+        { "origin": "A", "destination": "B", "transport_type": "train" },
+        { "origin": "C", "destination": "D", "transport_type": "train" }
+    ]
+}
+
+###
+# FAILURE (422): Attempt to create an itinerary with a circular reference.
+POST http://localhost:3000/itineraries
+Content-Type: application/json
+
+{
+    "tickets": [
+        { "origin": "A", "destination": "B", "transport_type": "train" },
+        { "origin": "B", "destination": "A", "transport_type": "train" }
+    ]
+}

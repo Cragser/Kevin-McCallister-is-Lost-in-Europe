@@ -1,0 +1,27 @@
+# NOTE ON DUPLICATION:
+# The REST Client extension scopes variables to a single file. To test the GET endpoint,
+# we must first create an itinerary. Therefore, the creation request is duplicated here
+# so that its response (and ID) can be used by the GET request in this same file.
+
+###
+# @name createItineraryForHumanGetTest
+# STEP 1: Create an itinerary to get an ID for testing.
+POST http://localhost:3000/itineraries
+Content-Type: application/json
+
+{
+  "tickets": [
+    { "origin": "B", "destination": "C", "transport_type": "flight" },
+    { "origin": "A", "destination": "B", "transport_type": "train" },
+    { "origin": "C", "destination": "D", "transport_type": "bus" }
+  ]
+}
+
+###
+# SUCCESS (200): Retrieve the human-readable version of an itinerary.
+# NOTE: First, run the "createItineraryForHumanGetTest" request above.
+GET http://localhost:3000/itineraries/{{createItineraryForHumanGetTest.response.body.id}}/human
+
+###
+# FAILURE (404): Attempt to retrieve a human-readable itinerary with an ID that does not exist.
+GET http://localhost:3000/itineraries/00000000-0000-0000-0000-000000000000/human

@@ -1,10 +1,10 @@
 import {
   IsString,
   IsNotEmpty,
-  IsObject,
   IsOptional,
   IsArray,
   ValidateNested,
+  IsEnum,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
@@ -57,6 +57,15 @@ export class TicketDetailsDto {
   notes?: string;
 }
 
+export enum TransportType {
+  Train = 'train',
+  Flight = 'flight',
+  Bus = 'bus',
+  Tram = 'tram',
+  Boat = 'boat',
+  Taxi = 'taxi',
+}
+
 export class TicketDto {
   @ApiProperty({
     example: 'St. Anton am Arlberg Bahnhof',
@@ -75,19 +84,17 @@ export class TicketDto {
   destination: string;
 
   @ApiProperty({
-    example: 'train',
-    description: 'The type of transportation (e.g., train, flight, bus).',
+    description: 'The type of transportation.',
+    enum: TransportType,
   })
-  @IsString()
-  @IsNotEmpty()
-  transport_type: string;
+  @IsEnum(TransportType)
+  transport_type: TransportType;
 
   @ApiProperty({
     description: 'Optional details specific to the transport type.',
     type: TicketDetailsDto,
     required: false,
   })
-  @IsObject()
   @IsOptional()
   @ValidateNested()
   @Type(() => TicketDetailsDto)
