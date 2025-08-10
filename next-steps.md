@@ -14,9 +14,7 @@ This document outlines potential improvements, why they’re valuable, and why t
 
 ### Design and extensibility
 
-- **Introduce `Itinerary` as an entity/aggregate** (for future operations like delete, partial updates)
-  - **Benefit**: Clearer domain model, invariants in one place, easier future evolution.
-  - **Why not now**: Additional abstraction without immediate need; will revisit when write operations grow.
+<!-- Implemented: Itinerary entity and in-memory repository abstraction -->
 
 ### Documentation
 

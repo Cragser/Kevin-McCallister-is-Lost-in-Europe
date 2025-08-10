@@ -1,22 +1,20 @@
-import { ItineraryResponseDto } from '../dto/itinerary-response.dto';
+import { Itinerary } from './itinerary.entity';
 
 export interface ItineraryRepository {
-  findById(id: string): ItineraryResponseDto | undefined;
-  save(itinerary: ItineraryResponseDto): void;
+  findById(id: string): Itinerary | undefined;
+  save(itinerary: Itinerary): void;
 }
 
 export const ITINERARY_REPOSITORY = Symbol('ItineraryRepository');
 
 export class InMemoryItineraryRepository implements ItineraryRepository {
-  private readonly idToItinerary = new Map<string, ItineraryResponseDto>();
+  private readonly idToItinerary = new Map<string, Itinerary>();
 
-  findById(id: string): ItineraryResponseDto | undefined {
+  findById(id: string): Itinerary | undefined {
     return this.idToItinerary.get(id);
   }
 
-  save(itinerary: ItineraryResponseDto): void {
+  save(itinerary: Itinerary): void {
     this.idToItinerary.set(itinerary.id, itinerary);
   }
 }
-
-
