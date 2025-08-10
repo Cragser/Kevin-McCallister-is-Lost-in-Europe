@@ -7,6 +7,8 @@ import {
   Get,
   Param,
   ParseUUIDPipe,
+  Header,
+  Res,
 } from '@nestjs/common';
 import { ItineraryService } from './itinerary.service';
 import { CreateItineraryRequestDto } from '../dto/create-itinerary.dto';
@@ -17,8 +19,10 @@ import {
   ApiBody,
   ApiUnprocessableEntityResponse,
   ApiNotFoundResponse,
+  ApiProduces,
 } from '@nestjs/swagger';
 import { ItineraryResponseDto } from '../dto/itinerary-response.dto';
+import { Response } from 'express';
 
 @ApiTags('itineraries')
 @Controller({ path: 'itineraries', version: '1' })
@@ -53,8 +57,13 @@ export class ItineraryController {
   })
   create(
     @Body() createItineraryDto: CreateItineraryRequestDto,
+    @Res({ passthrough: true }) res: Response,
   ): ItineraryResponseDto {
-    return this.itineraryService.sortItinerary(createItineraryDto.tickets);
+    const result = this.itineraryService.sortItinerary(
+      createItineraryDto.tickets,
+    );
+    res.setHeader('Location', `/v1/itineraries/${result.id}`);
+    return result;
   }
 
   @Get(':id')
@@ -89,11 +98,13 @@ export class ItineraryController {
     description: 'The human-readable itinerary.',
     type: String,
   })
+  @ApiProduces('text/plain')
   @ApiResponse({
     status: 404,
     description:
       'Not Found. The itinerary with the specified ID does not exist.',
   })
+  @Header('Content-Type', 'text/plain; charset=utf-8')
   findOneHuman(@Param('id', ParseUUIDPipe) id: string): string {
     return this.itineraryService.findHumanReadableById(id);
   }
