@@ -1,73 +1,147 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
+# Itinerary Sorting API
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+This project is a solution to the "Kevin McCallister is Lost in Europe" challenge. It's a Nest.js-based REST API that takes a list of unsorted travel tickets, sorts them into a coherent itinerary, and provides endpoints to retrieve the result.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Features
 
-## Description
+-   Sorts a list of travel tickets into a continuous itinerary.
+-   Handles invalid itineraries (e.g., broken chains, cycles).
+-   Persists sorted itineraries in memory.
+-   Provides endpoints to retrieve sorted itineraries in JSON or human-readable format.
+-   Includes interactive API documentation via Swagger.
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+---
 
-## Installation
+## Getting Started
 
-```bash
-$ pnpm install
-```
+### Prerequisites
 
-## Running the app
+-   [Node.js](https://nodejs.org/en/) (v18 or higher recommended)
+-   [pnpm](https://pnpm.io/) package manager
 
-```bash
-# development
-$ pnpm run start
+### Installation
 
-# watch mode
-$ pnpm run start:dev
+1.  Clone the repository:
+    ```bash
+    git clone <repository-url>
+    ```
+2.  Navigate to the project directory:
+    ```bash
+    cd genty
+    ```
+3.  Install the dependencies:
+    ```bash
+    pnpm install
+    ```
 
-# production mode
-$ pnpm run start:prod
-```
-
-## Test
+### Running the Application
 
 ```bash
-# unit tests
-$ pnpm run test
-
-# e2e tests
-$ pnpm run test:e2e
-
-# test coverage
-$ pnpm run test:cov
+# Start the development server with hot-reloading
+pnpm run start:dev
 ```
 
-## Support
+The application will be running on `http://localhost:3000`.
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+---
 
-## Stay in touch
+## Running Tests
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+This project uses Jest for end-to-end (e2e) testing.
 
-## License
+To run the tests, execute the following command:
 
-Nest is [MIT licensed](LICENSE).
+```bash
+pnpm run test:e2e
+```
+
+---
+
+## API Documentation
+
+Once the application is running, you can access the interactive API documentation (Swagger UI) by navigating to:
+
+[http://localhost:3000/api](http://localhost:3000/api)
+
+The documentation provides detailed information about the available endpoints, their parameters, and response schemas. You can also use it to send requests to the API directly.
+
+---
+
+## Example Usage
+
+Here is an example of how to sort an itinerary using `curl`.
+
+```bash
+curl -X POST 'http://localhost:3000/itineraries' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+  "tickets": [
+    {
+      "origin": "Innsbruck Airport",
+      "destination": "Venice Airport",
+      "transport_type": "flight",
+      "details": {
+        "vehicle_id": "AA904",
+        "seat": "18B",
+        "gate": "10",
+        "notes": "Self-check-in luggage at counter."
+      }
+    },
+    {
+      "origin": "St. Anton am Arlberg Bahnhof",
+      "destination": "Innsbruck Airport",
+      "transport_type": "train",
+      "details": {
+        "vehicle_id": "RJX 765",
+        "seat": "17C"
+      }
+    },
+    {
+      "origin": "Venice Airport",
+      "destination": "Home",
+      "transport_type": "taxi",
+      "details": {
+        "notes": "The final ride home."
+      }
+    }
+  ]
+}'
+```
+
+---
+
+## Design Choices & Assumptions
+
+### Input Format
+
+The problem description did not specify a strict input format for the tickets. I have defined a flexible JSON structure that includes:
+-   `origin` (string, required)
+-   `destination` (string, required)
+-   `transport_type` (string, required)
+-   `details` (object, optional) containing any other relevant information (`seat`, `gate`, `vehicle_id`, etc.).
+
+This structure is enforced by DTOs and `class-validator`.
+
+### Persistence
+
+For this challenge, the sorted itineraries are stored in an in-memory map. In a production environment, this would be replaced with a persistent database like PostgreSQL, MongoDB, or Redis.
+
+### Extensibility: Adding New Transit Types
+
+The current design makes it easy to add new types of transit. The `transport_type` is a simple string, and the `details` object can accommodate any new fields without requiring changes to the core sorting logic.
+
+For example, to add a "boat" transit type with a "cabin_number", you would simply include a ticket in the request like this:
+
+```json
+{
+  "origin": "Port A",
+  "destination": "Port B",
+  "transport_type": "boat",
+  "details": {
+    "vehicle_id": "The Salty Seahorse",
+    "cabin_number": "C-12"
+  }
+}
+```
+
+The `generateHumanReadable` function in `ItineraryService` could be updated to recognize the "boat" type and include the `cabin_number` in its output, but the sorting algorithm itself requires no changes.
